@@ -3,7 +3,7 @@
 #include "../board/board.h"
 
 // app mode
-volatile uint8_t app_mode = 0;
+volatile uint8_t app_mode = COMMON_MODE;
 
 /**
  * Start debounce timer ISR
@@ -30,7 +30,7 @@ ISR(TIMER0_OVF_vect) {
 
     // Btn still press
     if (!(PIND & (1 << PD3))) {
-        if (app_mode == SNIFF_RT_MODE) {
+        if (app_mode == SNIFF_EEPROM_MODE) {
             app_mode = COMMON_MODE;
         } else {
             app_mode++;

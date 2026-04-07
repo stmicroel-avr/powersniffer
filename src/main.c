@@ -87,6 +87,9 @@ int main(void) {
             lcd_puts(4, buffer[3]);
         }
 
+        snprintf(buffer[3], sizeof(buffer[3]), "App mode: %d", app_mode);
+        lcd_puts(4, buffer[3]);
+
         _delay_ms(200);
     }
 }
