@@ -13,7 +13,7 @@ bool ina_b2_st = false;
 /**
  * I2C Checks
  */
-bool health_checks(void) {
+bool i2c_health_checks(void) {
     uint8_t devices[5] = {
         LCD_I2C_ADDR,
         DS3231_ADDR,
