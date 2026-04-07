@@ -6,9 +6,9 @@
 #include "drivers/led.h"
 #include "drivers/uart.h"
 #include "devices/ina219.h"
-#include "drivers/timers.h"
 #include "devices/lcd_hd44780_i2c.h"
 
+#include "modules/app_state.h"
 #include "modules/health_checks.h"
 #include "modules/settings_mode.h"
 
@@ -48,8 +48,8 @@ int main(void) {
     // Blink
     led_blink(3, LED_DELAY_SHORT);
 
-    // Timer init
-    timer_init();
+    // ISR
+    btn_mode_init();
 
     // Startup delay
     _delay_ms(1000);
@@ -62,10 +62,10 @@ int main(void) {
         lcd_puts(1, "B1 Voltage: -");
         lcd_puts(1, "B1 Current: -");
     }
-    if (!ina_b2_st) {
-        lcd_puts(3, "B2 Voltage: -");
-        lcd_puts(4, "B2 Current: -");
-    }
+    // if (!ina_b2_st) {
+    //     lcd_puts(3, "B2 Voltage: -");
+    //     lcd_puts(4, "B2 Current: -");
+    // }
 
     char buffer[LCD_ROWS][LCD_COLS + 1];
     while (1) {
@@ -87,6 +87,6 @@ int main(void) {
             lcd_puts(4, buffer[3]);
         }
 
-        _delay_ms(250);
+        _delay_ms(200);
     }
 }
