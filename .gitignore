@@ -1,0 +1,52 @@
+# ===== CMake / CLion =====
+
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# CLion / IntelliJ
+
+.idea/
+*.iml
+
+# ===== Build artifacts =====
+
+*.o
+*.obj
+*.elf
+*.hex
+*.bin
+*.map
+*.lst
+*.lss
+
+# AVR specific
+
+*.eep
+*.srec
+
+# ===== Debug / temp =====
+
+*.log
+*.tmp
+*.swp
+*~
+.DS_Store
+
+# ===== Toolchain / local configs =====
+
+.toolchain/
+.vscode/
+
+# ===== Dependencies (если будут) =====
+
+build/
+out/
+
+# ===== Misc =====
+
+*.bak
+*.orig
