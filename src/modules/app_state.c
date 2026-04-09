@@ -30,10 +30,10 @@ ISR(TIMER0_OVF_vect) {
 
     // Btn still press
     if (!(PIND & (1 << PD3))) {
-        if (app_mode == SNIFF_EEPROM_MODE) {
-            app_mode = COMMON_MODE;
-        } else {
+        if (app_mode != SNIFF_EEPROM_MODE) {
             app_mode++;
+        } else {
+            app_mode = COMMON_MODE;
         }
     }
 
