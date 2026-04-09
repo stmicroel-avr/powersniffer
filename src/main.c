@@ -5,12 +5,15 @@
 #include "drivers/twi.h"
 #include "drivers/led.h"
 #include "drivers/uart.h"
+#include "drivers/timers.h"
 #include "devices/ina219.h"
 #include "devices/lcd_hd44780_i2c.h"
 
 #include "modules/app_state.h"
 #include "modules/health_checks.h"
 #include "modules/settings_mode.h"
+#include "modules/common_mode.h"
+#include "modules/clock_mode.h"
 
 /**
  * Main entry
@@ -57,39 +60,32 @@ int main(void) {
     // Clear display
     lcd_clear();
 
-    // INA placeholders
-    if (!ina_b1_st) {
-        lcd_puts(1, "B1 Voltage: -");
-        lcd_puts(1, "B1 Current: -");
-    }
-    // if (!ina_b2_st) {
-    //     lcd_puts(3, "B2 Voltage: -");
-    //     lcd_puts(4, "B2 Current: -");
-    // }
+    // Init ms timers
+    init_ms_timer();
 
-    char buffer[LCD_ROWS][LCD_COLS + 1];
+    bool force_refresh = true;
+    bool show_header = true;
+    uint32_t last_touch_ms = 0;
+    uint8_t last_mode = app_mode;
     while (1) {
-        if (ina_b1_st) {
-            float current = ina219_read_current(INA219_ADDR_B1);
-            float voltage = ina219_read_bus_voltage(INA219_ADDR_B1);
-            snprintf(buffer[0], sizeof(buffer[0]), "B1 Voltage: %.2fV", voltage);
-            snprintf(buffer[1], sizeof(buffer[1]), "B1 Current: %.3fA", current);
-            lcd_puts(1, buffer[0]);
-            lcd_puts(2, buffer[1]);
+        if (force_refresh || (get_ms() - last_touch_ms) >= REFRESH_RATE_MS) {
+            if (app_mode == COMMON_MODE) {
+                display_common_mode(ina_b1_st, ina_b2_st, show_header);
+            } else if (app_mode == CLOCK_MODE) {
+                display_clock(show_header);
+            }
+            force_refresh = false;
+            show_header = false;
+            last_touch_ms = get_ms();
         }
 
-        if (ina_b2_st) {
-            float current = ina219_read_current(INA219_ADDR_B2);
-            float voltage = ina219_read_bus_voltage(INA219_ADDR_B2);
-            snprintf(buffer[2], sizeof(buffer[0]), "B2 Voltage: %.2fV", voltage);
-            snprintf(buffer[3], sizeof(buffer[1]), "B2 Current: %.3fA", current);
-            lcd_puts(3, buffer[2]);
-            lcd_puts(4, buffer[3]);
+        if (last_mode != app_mode) {
+            last_mode = app_mode;
+            force_refresh = true;
+            show_header = true;
+            lcd_clear();
         }
 
-        snprintf(buffer[3], sizeof(buffer[3]), "App mode: %d", app_mode);
-        lcd_puts(4, buffer[3]);
-
-        _delay_ms(200);
+        _delay_ms(1);
     }
 }
