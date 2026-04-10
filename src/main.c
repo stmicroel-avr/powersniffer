@@ -67,8 +67,9 @@ int main(void) {
     bool show_header = true;
     uint32_t last_touch_ms = 0;
     uint8_t last_mode = app_mode;
+    uint16_t rate_ms = REFRESH_RATE_MS;
     while (1) {
-        if (force_refresh || (get_ms() - last_touch_ms) >= REFRESH_RATE_MS) {
+        if (force_refresh || (get_ms() - last_touch_ms) >= rate_ms) {
             if (app_mode == COMMON_MODE) {
                 display_common_mode(ina_b1_st, ina_b2_st, show_header);
             } else if (app_mode == CLOCK_MODE) {
@@ -83,6 +84,12 @@ int main(void) {
             last_mode = app_mode;
             force_refresh = true;
             show_header = true;
+            if (app_mode == CLOCK_MODE) {
+                rate_ms = 950;
+            } else {
+                rate_ms = REFRESH_RATE_MS;
+            }
+
             lcd_clear();
         }
 

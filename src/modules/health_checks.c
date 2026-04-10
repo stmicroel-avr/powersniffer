@@ -51,7 +51,7 @@ bool i2c_health_checks(void) {
 
         if (stop) return false;
 
-        _delay_ms(750);
+        _delay_ms(500);
     }
 
     return ina_b1_st || ina_b2_st;
