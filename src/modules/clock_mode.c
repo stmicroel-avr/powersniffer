@@ -18,6 +18,6 @@ void display_clock(bool show_header) {
     rtc_read_time();
 
     char line[LCD_COLS + 1];
-    snprintf(line, sizeof(line), "Time: %d:%d:%d", get_hours(), get_minutes(), get_seconds());
+    snprintf(line, sizeof(line), "Time: %02d:%02d:%02d", get_hours(), get_minutes(), get_seconds());
     lcd_puts(2, line);
 }
