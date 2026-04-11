@@ -1,5 +1,3 @@
-#include "ds3231.h"
-
 #include "../board/board.h"
 #include "../drivers/twi.h"
 
@@ -16,6 +14,37 @@ struct {
  */
 static uint8_t bcd2dec(uint8_t v) {
     return ((v >> 4) * 10U) + (v & 0x0F);
+}
+
+/**
+ * RTC Read date
+ */
+void rtc_read_date(void) {
+    uint8_t st;
+
+    st = twi_start((DS3231_ADDR << 1) | 0);
+    if (st != 0x18) {
+        twi_stop();
+        return;
+    }
+
+    st = twi_write(0x04);   // стартуем с регистра date
+    if (st != 0x28) {
+        twi_stop();
+        return;
+    }
+
+    st = twi_start((DS3231_ADDR << 1) | 1);
+    if (st != 0x40) {
+        twi_stop();
+        return;
+    }
+
+    twi_stop();
+
+    time_t.d = bcd2dec(twi_read_ack() & 0x3F);
+    time_t.M = bcd2dec(twi_read_ack() & 0x1F);
+    time_t.y = bcd2dec(twi_read_nack());
 }
 
 /**
@@ -53,37 +82,6 @@ void rtc_read_time(void) {
     if (time_t.h == 0 && time_t.m == 0) {
         rtc_read_date();
     }
-}
-
-/**
- * RTC Read date
- */
-void rtc_read_date(void) {
-    uint8_t st;
-
-    st = twi_start((DS3231_ADDR << 1) | 0);
-    if (st != 0x18) {
-        twi_stop();
-        return;
-    }
-
-    st = twi_write(0x04);   // стартуем с регистра date
-    if (st != 0x28) {
-        twi_stop();
-        return;
-    }
-
-    st = twi_start((DS3231_ADDR << 1) | 1);
-    if (st != 0x40) {
-        twi_stop();
-        return;
-    }
-
-    twi_stop();
-
-    time_t.d = bcd2dec(twi_read_ack() & 0x3F);
-    time_t.M = bcd2dec(twi_read_ack() & 0x1F);
-    time_t.y = bcd2dec(twi_read_nack());
 }
 
 /**
