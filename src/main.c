@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <util/delay.h>
 
+#include "ds3231.h"
 #include "board/board.h"
 #include "drivers/twi.h"
 #include "drivers/led.h"
@@ -85,6 +86,7 @@ int main(void) {
             force_refresh = true;
             show_header = true;
             if (app_mode == CLOCK_MODE) {
+                rtc_init();
                 rate_ms = 950;
             } else {
                 rate_ms = REFRESH_RATE_MS;

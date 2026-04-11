@@ -1,14 +1,27 @@
 #pragma once
 
 #include <stdint.h>
-#include <stdbool.h>
 
 /**
  * RTC Read time
  *
  * @return
  */
-bool rtc_read_time(void);
+void rtc_read_time(void);
+
+/**
+ * RTC Read date
+ *
+ * @return
+ */
+void rtc_read_date(void);
+
+/**
+ * RTC Init date time
+ *
+ * @return
+ */
+void rtc_init(void);
 
 /**
  * Get hours
@@ -30,3 +43,24 @@ uint8_t get_minutes(void);
  * @return
  */
 uint8_t get_seconds(void);
+
+/**
+ * Get day
+ *
+ * @return
+ */
+uint8_t get_day(void);
+
+/**
+ * Get month
+ *
+ * @return
+ */
+uint8_t get_month(void);
+
+/**
+ * Get year
+ *
+ * @return
+ */
+uint8_t get_year_from_2000(void);
