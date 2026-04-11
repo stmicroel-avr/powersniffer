@@ -14,8 +14,8 @@
 #define I2C_BUS_FREQ       100000L
 
 // UART CONF
-#define UART_BAUD          38400
-#define UART_HC05_AT_BAUD  57600
+#define UART_BAUD          57600
+#define UART_HC05_AT_BAUD  38400
 
 // HC-05
 #define HC05_NETWORK_NAME  "PowerSniffer"
