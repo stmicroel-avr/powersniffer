@@ -15,10 +15,8 @@ void display_clock(bool show_header) {
         lcd_puts(1, "==== Clock mode ====");
     }
 
-    rtc_read_time();
-
     char lines[2][LCD_COLS + 1];
-    snprintf(lines[0], sizeof(lines[0]), "Date: 20%d-%02d-%02d", get_year_from_2000(), get_month(), get_day());
+    snprintf(lines[0], sizeof(lines[0]), "Date: 20%02d-%02d-%02d", get_year_from_2000(), get_month(), get_day());
     snprintf(lines[1], sizeof(lines[1]), "Time: %02d:%02d:%02d", get_hours(), get_minutes(), get_seconds());
     lcd_puts(2, lines[0]);
     lcd_puts(3, lines[1]);

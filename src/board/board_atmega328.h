@@ -16,6 +16,7 @@
 
 // UART CONF
 #define UART_BAUD          38400
+#define UART_HC05_AT_BAUD  57600
 
 // HC-05
 #define HC05_NETWORK_NAME  "PowerSniffer"
@@ -57,5 +58,7 @@
 // 24c EEPROM
 #define EXT_EEPROM_ADDR    0x50
 
-// FUNCS
+// APP
 #define REFRESH_RATE_MS    200
+#define REFRESH_RTC_MS     950
+#define RTC_START_UNIXTIME 946684800

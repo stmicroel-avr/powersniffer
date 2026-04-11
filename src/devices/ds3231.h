@@ -64,3 +64,10 @@ uint8_t get_month(void);
  * @return
  */
 uint8_t get_year_from_2000(void);
+
+/**
+ * Get unixtime
+ *
+ * @return
+ */
+uint32_t get_unixtime(void);

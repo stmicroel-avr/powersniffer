@@ -45,6 +45,11 @@ uint8_t uart_rx(void);
 uint8_t uart_expect(const char *expected, uint16_t timeout_ms);
 
 /**
- * Read one UART line into buffer.
+ * Read one UART line into buffer
+ *
+ * @param buffer Buffer
+ * @param buffer_size Size of buffer
+ * @param timeout_ms Timeout in ms
+ * @return
  */
 uint8_t uart_read_line(char *buffer, uint8_t buffer_size, uint16_t timeout_ms);

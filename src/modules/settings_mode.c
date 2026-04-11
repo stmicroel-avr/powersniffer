@@ -11,6 +11,8 @@
 void settings_mode(void) {
     char response[21];
 
+    uart_init(UART_HC05_AT_BAUD);
+
     lcd_clear();
     _delay_ms(100);
     lcd_puts(1, "Settings mode");
@@ -74,6 +76,21 @@ void settings_mode(void) {
     uart_expect("OK", 1000);
     _delay_ms(1500);
 
+    // --- UART (GET CURRENT BAUD) ---
+    lcd_puts(2, "Cmd: AT+UART?");
+    lcd_puts(3, "Wait response...");
+    lcd_puts(4, "  ");
+
+    uart_print("AT+UART?\r\n");
+    if (uart_read_line(response, sizeof(response), 2000)) {
+        lcd_puts(3, "Status: OK");
+        lcd_puts(4, response);
+    } else {
+        lcd_puts(3, "Status: Failed");
+    }
+    uart_expect("OK", 1000);
+    _delay_ms(1500);
+
     lcd_puts(2, "Settings done");
     lcd_puts(3, "All data read");
     lcd_puts(4, " ");
@@ -84,7 +101,6 @@ void settings_mode(void) {
     strcat(cmd, "AT+NAME=");
     strcat(cmd, HC05_NETWORK_NAME);
     strcat(cmd, "\r\n");
-
 
     // --- SET NAME ---
     lcd_puts(2, "Cmd: SET NAME");
@@ -114,6 +130,19 @@ void settings_mode(void) {
         lcd_puts(3, "Status: OK         ");
     } else {
         lcd_puts(3, "Status: Failed     ");
+    }
+    _delay_ms(1500);
+
+    // --- SET UART 57600 ---
+    lcd_puts(2, "Cmd: SET UART");
+    lcd_puts(3, "57600...");
+    lcd_puts(4, " ");
+
+    uart_print("AT+UART=57600,0,0\r\n");
+    if (uart_expect("OK", 2000)) {
+        lcd_puts(3, "Status: OK");
+    } else {
+        lcd_puts(3, "Status: Failed");
     }
     _delay_ms(1500);
 

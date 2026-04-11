@@ -13,7 +13,7 @@
 #include "modules/app_state.h"
 #include "modules/health_checks.h"
 #include "modules/settings_mode.h"
-#include "modules/common_mode.h"
+#include "modules/ina_modes.h"
 #include "modules/clock_mode.h"
 
 /**
@@ -26,9 +26,6 @@ int main(void) {
 
     // I2C Init
     twi_init(I2C_BUS_FREQ);
-
-    // UART Init
-    uart_init(UART_BAUD);
 
     // LCD Init
     lcd_init();
@@ -44,6 +41,9 @@ int main(void) {
     // Settings mode
     SETTINGS_DDR &= ~(1 << SETTINGS_GPIO);
     if (SETTING_PIN & (1 << SETTINGS_GPIO)) settings_mode();
+
+    // UART Init
+    uart_init(UART_BAUD);
 
     // Initialize current/voltage meter
     ina219_init(INA219_ADDR_B1);
@@ -64,13 +64,17 @@ int main(void) {
     // Init ms timers
     init_ms_timer();
 
-    bool force_refresh = true;
+    // Init RTC
+    rtc_init();
+
     bool show_header = true;
+    bool force_refresh = true;
     uint32_t last_touch_ms = 0;
     uint8_t last_mode = app_mode;
-    uint16_t rate_ms = REFRESH_RATE_MS;
+    uint32_t last_rtc_update_touch_ms = get_ms();
+
     while (1) {
-        if (force_refresh || (get_ms() - last_touch_ms) >= rate_ms) {
+        if (force_refresh || (get_ms() - last_touch_ms) >= REFRESH_RATE_MS) {
             if (app_mode == COMMON_MODE) {
                 display_common_mode(ina_b1_st, ina_b2_st, show_header);
             } else if (app_mode == CLOCK_MODE) {
@@ -85,14 +89,12 @@ int main(void) {
             last_mode = app_mode;
             force_refresh = true;
             show_header = true;
-            if (app_mode == CLOCK_MODE) {
-                rtc_init();
-                rate_ms = 950;
-            } else {
-                rate_ms = REFRESH_RATE_MS;
-            }
-
             lcd_clear();
+        }
+
+        if ((get_ms() - last_rtc_update_touch_ms) >= REFRESH_RTC_MS) {
+            rtc_read_time();
+            last_rtc_update_touch_ms = get_ms();
         }
 
         _delay_ms(1);
