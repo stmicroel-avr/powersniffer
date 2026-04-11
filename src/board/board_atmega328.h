@@ -8,8 +8,7 @@
 // BUTTONS CONF
 #define COMMON_MODE        1
 #define CLOCK_MODE         2
-#define SNIFF_RT_MODE      3
-#define SNIFF_EEPROM_MODE  4
+#define METRICS_SEND_MODE      3
 
 // I2C CONF
 #define I2C_BUS_FREQ       100000L

@@ -79,9 +79,12 @@ int main(void) {
                 display_common_mode(ina_b1_st, ina_b2_st, show_header);
             } else if (app_mode == CLOCK_MODE) {
                 display_clock(show_header);
+            } else if (app_mode == METRICS_SEND_MODE) {
+                display_ble_mode(ina_b1_st, ina_b2_st, show_header);
             }
-            force_refresh = false;
+
             show_header = false;
+            force_refresh = false;
             last_touch_ms = get_ms();
         }
 
