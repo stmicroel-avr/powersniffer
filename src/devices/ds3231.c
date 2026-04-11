@@ -40,11 +40,11 @@ void rtc_read_date(void) {
         return;
     }
 
-    twi_stop();
-
     time_t.d = bcd2dec(twi_read_ack() & 0x3F);
     time_t.M = bcd2dec(twi_read_ack() & 0x1F);
     time_t.y = bcd2dec(twi_read_nack());
+
+    twi_stop();
 }
 
 /**
