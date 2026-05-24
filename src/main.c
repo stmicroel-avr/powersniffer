@@ -46,8 +46,8 @@ int main(void) {
     if (SETTING_PIN & (1 << SETTINGS_GPIO)) settings_mode();
 
     // Initialize current/voltage meter
-    ina219_init(INA219_ADDR_B1);
-    ina219_init(INA219_ADDR_B2);
+    ina219_init(INA219_ADDR_B1, INA219_1_CALIB_VAL);
+    ina219_init(INA219_ADDR_B2, INA219_2_CALIB_VAL);
 
     // Blink
     led_blink(3, LED_DELAY_SHORT);

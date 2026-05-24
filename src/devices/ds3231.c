@@ -150,9 +150,7 @@ uint8_t get_year_from_2000(void) {
  * @return
  */
 uint32_t get_unixtime(void) {
-    static const uint8_t mdays[] = {
-        31,28,31,30,31,30,31,31,30,31,30,31
-    };
+    static const uint8_t mdays[] = { 31,28,31,30,31,30,31,31,30,31,30,31};
 
     uint32_t days = 0;
     uint16_t year = 2000 + time_t.y;
@@ -160,7 +158,6 @@ uint32_t get_unixtime(void) {
     for (uint8_t i = 0; i < time_t.y; i++) {
         uint16_t yr = 2000 + i;
         days += 365;
-
         if ((yr % 4 == 0 && yr % 100 != 0) || (yr % 400 == 0)) {
             days += 1;
         }

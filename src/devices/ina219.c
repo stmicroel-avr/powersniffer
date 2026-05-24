@@ -42,12 +42,13 @@ static uint16_t ina219_read_reg(uint8_t addr, uint8_t reg) {
  * Initialize INA219 with the default configuration
  *
  * @param addr Device address
+ * @param reg_calib_value Shunt resistance calibration value
  */
-void ina219_init(uint8_t addr) {
+void ina219_init(uint8_t addr, uint16_t reg_calib_value) {
     // 32V range, ±320mV shunt, 12-bit ADC, continuous mode
     ina219_write_reg(addr, INA219_REG_CONFIG, 0x399F);
     // Calibration for 0.1 ohm, Current_LSB = 100uA
-    ina219_write_reg(addr, INA219_REG_CALIB, 0x1000);
+    ina219_write_reg(addr, INA219_REG_CALIB, reg_calib_value);
 }
 
 /**
@@ -70,5 +71,8 @@ float ina219_read_bus_voltage(uint8_t addr) {
  */
 float ina219_read_current(uint8_t addr) {
     int16_t raw = (int16_t)ina219_read_reg(addr, INA219_REG_CURRENT);
+    if (raw < 0) {
+        return 0;
+    }
     return raw * 0.0001f;
 }

@@ -6,8 +6,9 @@
  * Initialize INA219 with the default configuration
  *
  * @param addr Device address
+ * @param reg_calib_value Shunt resistance calibration value
  */
-void ina219_init(uint8_t addr);
+void ina219_init(uint8_t addr, uint16_t reg_calib_value);
 
 /**
  * Read bus voltage in volts.

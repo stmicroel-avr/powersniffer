@@ -8,7 +8,7 @@
 // BUTTONS CONF
 #define COMMON_MODE        1
 #define CLOCK_MODE         2
-#define METRICS_SEND_MODE      3
+#define METRICS_SEND_MODE  3
 
 // I2C CONF
 #define I2C_BUS_FREQ       100000L
@@ -40,15 +40,19 @@
 #define LCD_COLS           20
 #define LCD_ROWS           4
 
-// INA219 ADDRESSES
-#define INA219_ADDR_B1     0x40
-#define INA219_ADDR_B2     0x45
-
-// INA219 CONF
+// INA219 COMMON CONF
 #define INA219_REG_CONFIG  0x00
 #define INA219_REG_BUS     0x02
 #define INA219_REG_CURRENT 0x04
 #define INA219_REG_CALIB   0x05
+
+// INA219 DEVICES
+// BUS1
+#define INA219_ADDR_B1     0x40
+#define INA219_1_CALIB_VAL 0x1000
+// BUS2
+#define INA219_ADDR_B2     0x42
+#define INA219_2_CALIB_VAL 0x0333
 
 // RTC
 #define DS3231_ADDR        0x68
