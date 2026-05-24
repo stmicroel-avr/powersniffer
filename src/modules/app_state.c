@@ -9,9 +9,12 @@ volatile uint8_t app_mode = COMMON_MODE;
  * Start debounce timer ISR
  */
 static void start_debounce_timer(void) {
+    TCCR0B = 0;
+    TCCR0A = 0;
     TCNT0 = 0;
-    TCCR0B |= (1 << CS02) | (1 << CS00);
+    TIFR0 |= (1 << TOV0);
     TIMSK0 |= (1 << TOIE0);
+    TCCR0B = (1 << CS02) | (1 << CS00);
 }
 
 /**
@@ -28,7 +31,7 @@ void stop_debounce_timer(void) {
 ISR(TIMER0_OVF_vect) {
     stop_debounce_timer();
 
-    // Btn still press
+    // Btn still pressed
     if (!(PIND & (1 << PD3))) {
         if (app_mode != METRICS_SEND_MODE) {
             app_mode++;
@@ -37,31 +40,43 @@ ISR(TIMER0_OVF_vect) {
         }
     }
 
+    // Clear pending btn flag
+    EIFR |= (1 << INTF1);
+
     // Enable btn ISR again
-    EIMSK |= 1 << INT1;
+    EIMSK |= (1 << INT1);
 }
 
 /**
  * Set ISR btn state on click
  */
 ISR(INT1_vect) {
-    // disable rising ISR
+    // Disable btn ISR
     EIMSK &= ~(1 << INT1);
+
     start_debounce_timer();
 }
 
 /**
-* Allow button ISR
+ * Allow button ISR
  */
 void btn_mode_init(void) {
-    // int pd3
+    // Set PD3 as input
     DDRD &= ~(1 << PD3);
 
-    // isr by rising edge
-    EICRA |= 1 << ISC11;   // ISC11 = 1
-    EICRA &= ~(1 << ISC10);  // ISC10 = 0
-    EIMSK |= 1 << INT1;
+    // Enable internal pull-up
+    PORTD |= (1 << PD3);
 
-    // Start ISR
+    // ISR by falling edge
+    EICRA |= (1 << ISC11);
+    EICRA &= ~(1 << ISC10);
+
+    // Clear pending btn flag
+    EIFR |= (1 << INTF1);
+
+    // Enable INT1 ISR
+    EIMSK |= (1 << INT1);
+
+    // Start global ISR
     sei();
 }

@@ -38,12 +38,12 @@ int main(void) {
     // Check I2C dependencies
     if (!i2c_health_checks()) led_blink(UINT8_MAX, LED_MODE_INFINITE);
 
+    // UART Init
+    uart_init(UART_BAUD);
+
     // Settings mode
     SETTINGS_DDR &= ~(1 << SETTINGS_GPIO);
     if (SETTING_PIN & (1 << SETTINGS_GPIO)) settings_mode();
-
-    // UART Init
-    uart_init(UART_BAUD);
 
     // Initialize current/voltage meter
     ina219_init(INA219_ADDR_B1);

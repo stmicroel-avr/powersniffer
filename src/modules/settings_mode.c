@@ -11,11 +11,23 @@
 void settings_mode(void) {
     char response[21];
 
-    uart_init(UART_HC05_AT_BAUD);
-
     lcd_clear();
     _delay_ms(100);
     lcd_puts(1, "Settings mode");
+
+    // --- AT RESET ---
+    lcd_puts(2, "Cmd: RESET");
+    lcd_puts(3, "Wait response...");
+    lcd_puts(4, " ");
+
+    uart_print("AT+ORGL\r\n");
+    if (uart_expect("OK", 2000)) {
+        lcd_puts(3, "Status: OK");
+    } else {
+        lcd_puts(3, "Status: Failed(stop)");
+        while (1);
+    }
+    _delay_ms(1500);
 
     // --- AT ---
     lcd_puts(2, "Cmd: AT");
@@ -76,6 +88,36 @@ void settings_mode(void) {
     uart_expect("OK", 1000);
     _delay_ms(1500);
 
+    // --- PSWD ---
+    lcd_puts(2, "Cmd: AT+PSWD?");
+    lcd_puts(3, "Wait response...");
+    lcd_puts(4, "  ");
+
+    uart_print("AT+PSWD?\r\n");
+    if (uart_read_line(response, sizeof(response), 2000)) {
+        lcd_puts(3, "Status: OK");
+        lcd_puts(4, response);
+    } else {
+        lcd_puts(3, "Status: Failed");
+    }
+    uart_expect("OK", 1000);
+    _delay_ms(1500);
+
+    // --- PWD ---
+    lcd_puts(2, "Cmd: AT+PWD?");
+    lcd_puts(3, "Wait response...");
+    lcd_puts(4, "  ");
+
+    uart_print("AT+PWD?\r\n");
+    if (uart_read_line(response, sizeof(response), 2000)) {
+        lcd_puts(3, "Status: OK");
+        lcd_puts(4, response);
+    } else {
+        lcd_puts(3, "Status: Failed");
+    }
+    uart_expect("OK", 1000);
+    _delay_ms(1500);
+
     // --- UART (GET CURRENT BAUD) ---
     lcd_puts(2, "Cmd: AT+UART?");
     lcd_puts(3, "Wait response...");
@@ -115,30 +157,25 @@ void settings_mode(void) {
     }
     _delay_ms(1500);
 
-    memset(cmd, 0, sizeof(cmd));
-    strcat(cmd, "AT+PSWD=");
-    strcat(cmd, HC05_NETWORK_PASS);
-    strcat(cmd, "\r\n");
-
     // --- SET PASSWORD ---
     lcd_puts(2, "Cmd: SET PASSWORD  ");
     lcd_puts(3, "Wait response...   ");
     lcd_puts(4, " ");
 
-    uart_print(cmd);
+    uart_print("AT+PSWD=6049\r\n");
     if (uart_expect("OK", 2000)) {
-        lcd_puts(3, "Status: OK         ");
+        lcd_puts(3, "Status: OK");
     } else {
-        lcd_puts(3, "Status: Failed     ");
+        lcd_puts(3, "Status: Failed");
     }
     _delay_ms(1500);
 
-    // --- SET UART 57600 ---
+    // --- SET UART 38400 ---
     lcd_puts(2, "Cmd: SET UART");
-    lcd_puts(3, "57600...");
+    lcd_puts(3, "38400...");
     lcd_puts(4, " ");
 
-    uart_print("AT+UART=57600,0,0\r\n");
+    uart_print("AT+UART=38400,0,0\r\n");
     if (uart_expect("OK", 2000)) {
         lcd_puts(3, "Status: OK");
     } else {
